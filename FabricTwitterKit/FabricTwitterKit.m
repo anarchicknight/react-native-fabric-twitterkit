@@ -90,16 +90,16 @@ RCT_EXPORT_METHOD(fetchProfile:(RCTResponseSenderBlock)callback)
 }
 
 RCT_EXPORT_METHOD(getMyLists:(NSDictionary *)options :(RCTResponseSenderBlock)callback) {
-    TWTRAPIClient *client = [[TWTRAPIClient alloc] init];
-    TWTRSessionStore *store = [[Twitter sharedInstance] sessionStore];
+    TWTRSession *lastSession = [Twitter sharedInstance].sessionStore.session;
+    
     NSString *count = options[@"count"];
 
-    TWTRSession *lastSession = store.session;
-
     if(lastSession) {
+        NSString *userId = lastSession.userID;
+        TWTRAPIClient *client = [[TWTRAPIClient alloc] initWithUserID:userId];
         NSString *myListEndpoint = @"https://api.twitter.com/1.1/lists/ownerships.json";
         NSDictionary *params = @{
-            @"user_id": lastSession.userID,
+            @"user_id": userId,
             @"count": count
         };
         NSError *clientError;
@@ -109,10 +109,8 @@ RCT_EXPORT_METHOD(getMyLists:(NSDictionary *)options :(RCTResponseSenderBlock)ca
                 if(data) {
                     NSError *jsonError;
                      NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-                     NSLog(@"%@",[json description]);
                      callback(@[[NSNull null], json]);
                 } else {
-                    NSLog(@"Error code: %ld | Error description: %@", (long)[connectionError code], [connectionError localizedDescription]);
                     callback(@[[connectionError localizedDescription]]);       
                 }
             }];
@@ -125,16 +123,16 @@ RCT_EXPORT_METHOD(getMyLists:(NSDictionary *)options :(RCTResponseSenderBlock)ca
 }
 
 RCT_EXPORT_METHOD(getSubscribedLists:(NSDictionary *)options :(RCTResponseSenderBlock)callback) {
-    TWTRAPIClient *client = [[TWTRAPIClient alloc] init];
-    TWTRSessionStore *store = [[Twitter sharedInstance] sessionStore];
+    TWTRSession *lastSession = [Twitter sharedInstance].sessionStore.session;
+    
     NSString *count = options[@"count"];
 
-    TWTRSession *lastSession = store.session;
-
     if(lastSession) {
+        NSString *userId = lastSession.userID;
+        TWTRAPIClient *client = [[TWTRAPIClient alloc] initWithUserID:userId];
         NSString *subscribedListEndpoint = @"https://api.twitter.com/1.1/lists/subscriptions.json";
         NSDictionary *params = @{
-            @"user_id": lastSession.userID,
+            @"user_id": userId,
             @"count": count
         };
         NSError *clientError;
@@ -144,10 +142,8 @@ RCT_EXPORT_METHOD(getSubscribedLists:(NSDictionary *)options :(RCTResponseSender
                 if(data) {
                     NSError *jsonError;
                      NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-                     NSLog(@"%@",[json description]);
                      callback(@[[NSNull null], json]);
                 } else {
-                    NSLog(@"Error code: %ld | Error description: %@", (long)[connectionError code], [connectionError localizedDescription]);
                     callback(@[[connectionError localizedDescription]]);       
                 }
             }];
@@ -160,16 +156,16 @@ RCT_EXPORT_METHOD(getSubscribedLists:(NSDictionary *)options :(RCTResponseSender
 }
 
 RCT_EXPORT_METHOD(getMemberLists:(NSDictionary *)options :(RCTResponseSenderBlock)callback) {
-    TWTRAPIClient *client = [[TWTRAPIClient alloc] init];
-    TWTRSessionStore *store = [[Twitter sharedInstance] sessionStore];
+    TWTRSession *lastSession = [Twitter sharedInstance].sessionStore.session;
+    
     NSString *count = options[@"count"];
 
-    TWTRSession *lastSession = store.session;
-
     if(lastSession) {
+        NSString *userId = lastSession.userID;
+        TWTRAPIClient *client = [[TWTRAPIClient alloc] initWithUserID:userId];
         NSString *memberListEndpoint = @"https://api.twitter.com/1.1/lists/memberships.json";
         NSDictionary *params = @{
-            @"user_id": lastSession.userID,
+            @"user_id": userId,
             @"count": count
         };
         NSError *clientError;
@@ -179,10 +175,8 @@ RCT_EXPORT_METHOD(getMemberLists:(NSDictionary *)options :(RCTResponseSenderBloc
                 if(data) {
                     NSError *jsonError;
                      NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-                     NSLog(@"%@",[json description]);
                      callback(@[[NSNull null], json]);
                 } else {
-                    NSLog(@"Error code: %ld | Error description: %@", (long)[connectionError code], [connectionError localizedDescription]);
                     callback(@[[connectionError localizedDescription]]);       
                 }
             }];
