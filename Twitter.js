@@ -25,5 +25,14 @@ module.exports = {
   },
   composeTweet: function (options, cb) {
     SMXTwitter.composeTweet(options, cb);
+  },
+  getMyLists: function(options, cb) {
+    SMXTwitter.getMyLists(options, cb);
+  },
+  getSubscribedLists: function(options, cb) {
+    SMXTwitter.getSubscribedLists(options, cb);
+  },
+  getMemberLists: function(options, cb) {
+    SMXTwitter.getMemberLists(options, cb);
   }
 };

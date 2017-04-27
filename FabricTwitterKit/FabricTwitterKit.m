@@ -89,6 +89,111 @@ RCT_EXPORT_METHOD(fetchProfile:(RCTResponseSenderBlock)callback)
 
 }
 
+RCT_EXPORT_METHOD(getMyLists:(NSDictionary *)options :(RCTResponseSenderBlock)callback) {
+    TWTRAPIClient *client = [[TWTRAPIClient alloc] init];
+    TWTRSessionStore *store = [[Twitter sharedInstance] sessionStore];
+    NSString *count = options[@"count"];
+
+    TWTRSession *lastSession = store.session;
+
+    if(lastSession) {
+        NSString *myListEndpoint = @"https://api.twitter.com/1.1/lists/ownerships.json";
+        NSDictionary *params = @{
+            @"user_id": lastSession.userID,
+            @"count": count
+        };
+        NSError *clientError;
+        NSURLRequest *request = [client URLRequestWithMethod:@"GET" URL:myListEndpoint parameters:params error:&clientError];
+        if(request) {
+            [client sendTwitterRequest:request completion:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                if(data) {
+                    NSError *jsonError;
+                     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+                     NSLog(@"%@",[json description]);
+                     callback(@[[NSNull null], json]);
+                } else {
+                    NSLog(@"Error code: %ld | Error description: %@", (long)[connectionError code], [connectionError localizedDescription]);
+                    callback(@[[connectionError localizedDescription]]);       
+                }
+            }];
+        } else {
+            NSLog(@"Error: %@", clientError);
+        }
+    } else {
+        callback(@[@"Session must not be null."]);   
+    }
+}
+
+RCT_EXPORT_METHOD(getSubscribedLists:(NSDictionary *)options :(RCTResponseSenderBlock)callback) {
+    TWTRAPIClient *client = [[TWTRAPIClient alloc] init];
+    TWTRSessionStore *store = [[Twitter sharedInstance] sessionStore];
+    NSString *count = options[@"count"];
+
+    TWTRSession *lastSession = store.session;
+
+    if(lastSession) {
+        NSString *subscribedListEndpoint = @"https://api.twitter.com/1.1/lists/subscriptions.json";
+        NSDictionary *params = @{
+            @"user_id": lastSession.userID,
+            @"count": count
+        };
+        NSError *clientError;
+        NSURLRequest *request = [client URLRequestWithMethod:@"GET" URL:subscribedListEndpoint parameters:params error:&clientError];
+        if(request) {
+            [client sendTwitterRequest:request completion:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                if(data) {
+                    NSError *jsonError;
+                     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+                     NSLog(@"%@",[json description]);
+                     callback(@[[NSNull null], json]);
+                } else {
+                    NSLog(@"Error code: %ld | Error description: %@", (long)[connectionError code], [connectionError localizedDescription]);
+                    callback(@[[connectionError localizedDescription]]);       
+                }
+            }];
+        } else {
+            NSLog(@"Error: %@", clientError);
+        }
+    } else {
+        callback(@[@"Session must not be null."]);   
+    }
+}
+
+RCT_EXPORT_METHOD(getMemberLists:(NSDictionary *)options :(RCTResponseSenderBlock)callback) {
+    TWTRAPIClient *client = [[TWTRAPIClient alloc] init];
+    TWTRSessionStore *store = [[Twitter sharedInstance] sessionStore];
+    NSString *count = options[@"count"];
+
+    TWTRSession *lastSession = store.session;
+
+    if(lastSession) {
+        NSString *memberListEndpoint = @"https://api.twitter.com/1.1/lists/memberships.json";
+        NSDictionary *params = @{
+            @"user_id": lastSession.userID,
+            @"count": count
+        };
+        NSError *clientError;
+        NSURLRequest *request = [client URLRequestWithMethod:@"GET" URL:memberListEndpoint parameters:params error:&clientError];
+        if(request) {
+            [client sendTwitterRequest:request completion:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                if(data) {
+                    NSError *jsonError;
+                     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+                     NSLog(@"%@",[json description]);
+                     callback(@[[NSNull null], json]);
+                } else {
+                    NSLog(@"Error code: %ld | Error description: %@", (long)[connectionError code], [connectionError localizedDescription]);
+                    callback(@[[connectionError localizedDescription]]);       
+                }
+            }];
+        } else {
+            NSLog(@"Error: %@", clientError);
+        }
+    } else {
+        callback(@[@"Session must not be null."]);   
+    }
+}
+
 RCT_EXPORT_METHOD(fetchTweet:(NSDictionary *)options :(RCTResponseSenderBlock)callback)
 {
     TWTRAPIClient *client = [[TWTRAPIClient alloc] init];

@@ -155,6 +155,96 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
     }
 
     @ReactMethod
+    public void getMyLists(ReadableMap options, final Callback callback) {
+
+        try {
+            ReactNativeFabricApiClient client = new ReactNativeFabricApiClient(TwitterCore.getInstance().getSessionManager().getActiveSession());
+            int count = options.hasKey("count") ? Integer.parseInt(options.getString("count")) : 50;
+            client.getCustomService().myLists(TwitterCore.getInstance().getSessionManager().getActiveSession().getUserId(), count).enqueue(new com.twitter.sdk.android.core.Callback<Object>() {
+                @Override
+                public void success(Result<Object> result) {
+                    Gson gson = new Gson();
+                    try {
+                        WritableMap map = (WritableMap) FabricTwitterKitUtils.jsonToWritableMap(gson.toJson(result.data));
+                        callback.invoke(null, map);
+                    } catch (Exception exception) {
+                        callback.invoke(exception.getMessage());
+                    }
+                }
+
+                @Override
+                public void failure(TwitterException exception) {
+                    exception.printStackTrace();
+                    TwitterCore.getInstance().getSessionManager().clearActiveSession();
+                    callback.invoke(exception.getMessage());
+                }
+            });
+        } catch (Exception ex) {
+            callback.invoke(ex.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void getSubscribedLists(ReadableMap options, final Callback callback) {
+
+        try {
+            ReactNativeFabricApiClient client = new ReactNativeFabricApiClient(TwitterCore.getInstance().getSessionManager().getActiveSession());
+            int count = options.hasKey("count") ? Integer.parseInt(options.getString("count")) : 50;
+            client.getCustomService().subscribedLists(TwitterCore.getInstance().getSessionManager().getActiveSession().getUserId(), count).enqueue(new com.twitter.sdk.android.core.Callback<Object>() {
+                @Override
+                public void success(Result<Object> result) {
+                    Gson gson = new Gson();
+                    try {
+                        WritableMap map = (WritableMap) FabricTwitterKitUtils.jsonToWritableMap(gson.toJson(result.data));
+                        callback.invoke(null, map);
+                    } catch (Exception exception) {
+                        callback.invoke(exception.getMessage());
+                    }
+                }
+
+                @Override
+                public void failure(TwitterException exception) {
+                    exception.printStackTrace();
+                    TwitterCore.getInstance().getSessionManager().clearActiveSession();
+                    callback.invoke(exception.getMessage());
+                }
+            });
+        } catch (Exception ex) {
+            callback.invoke(ex.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void getMemberLists(ReadableMap options, final Callback callback) {
+
+        try {
+            ReactNativeFabricApiClient client = new ReactNativeFabricApiClient(TwitterCore.getInstance().getSessionManager().getActiveSession());
+            int count = options.hasKey("count") ? Integer.parseInt(options.getString("count")) : 50;
+            client.getCustomService().memberLists(TwitterCore.getInstance().getSessionManager().getActiveSession().getUserId(), count).enqueue(new com.twitter.sdk.android.core.Callback<Object>() {
+                @Override
+                public void success(Result<Object> result) {
+                    Gson gson = new Gson();
+                    try {
+                        WritableMap map = (WritableMap) FabricTwitterKitUtils.jsonToWritableMap(gson.toJson(result.data));
+                        callback.invoke(null, map);
+                    } catch (Exception exception) {
+                        callback.invoke(exception.getMessage());
+                    }
+                }
+
+                @Override
+                public void failure(TwitterException exception) {
+                    exception.printStackTrace();
+                    TwitterCore.getInstance().getSessionManager().clearActiveSession();
+                    callback.invoke(exception.getMessage());
+                }
+            });
+        } catch (Exception ex) {
+            callback.invoke(ex.getMessage());
+        }
+    }
+
+    @ReactMethod
     public void fetchTweet(ReadableMap options, final Callback callback) {
 
         try {
@@ -217,6 +307,15 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
     interface CustomService {
         @GET("/1.1/users/show.json")
         void show(@Query("user_id") long id, com.twitter.sdk.android.core.Callback<User> cb);
+
+        @GET("/1.1/lists/ownerships.json")
+        Call<Object> myLists(@Query("user_id") long id, @Query("count") int count);
+
+        @GET("/1.1/lists/subscriptions.json")
+        Call<Object> subscribedLists(@Query("user_id") long id, @Query("count") int count);
+
+        @GET("/1.1/lists/memberships.json")
+        Call<Object> memberLists(@Query("user_id") long id, @Query("count") int count);
     }
 
 }
