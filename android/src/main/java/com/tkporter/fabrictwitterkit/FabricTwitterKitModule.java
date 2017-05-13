@@ -145,7 +145,7 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
                 @Override
                 public void failure(TwitterException exception) {
                     exception.printStackTrace();
-                    TwitterCore.getInstance().getSessionManager().clearActiveSession();
+                    //TwitterCore.getInstance().getSessionManager().clearActiveSession();
                     callback.invoke(exception.getMessage());
                 }
             });
@@ -175,7 +175,7 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
                 @Override
                 public void failure(TwitterException exception) {
                     exception.printStackTrace();
-                    TwitterCore.getInstance().getSessionManager().clearActiveSession();
+                    //TwitterCore.getInstance().getSessionManager().clearActiveSession();
                     callback.invoke(exception.getMessage());
                 }
             });
@@ -205,7 +205,7 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
                 @Override
                 public void failure(TwitterException exception) {
                     exception.printStackTrace();
-                    TwitterCore.getInstance().getSessionManager().clearActiveSession();
+                    //TwitterCore.getInstance().getSessionManager().clearActiveSession();
                     callback.invoke(exception.getMessage());
                 }
             });
@@ -235,7 +235,7 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
                 @Override
                 public void failure(TwitterException exception) {
                     exception.printStackTrace();
-                    TwitterCore.getInstance().getSessionManager().clearActiveSession();
+                    //TwitterCore.getInstance().getSessionManager().clearActiveSession();
                     callback.invoke(exception.getMessage());
                 }
             });
@@ -270,7 +270,7 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
                 @Override
                 public void onFailure(Call<Tweet> call, Throwable t) {
                     t.printStackTrace();
-                    TwitterCore.getInstance().getSessionManager().clearActiveSession();
+                    //TwitterCore.getInstance().getSessionManager().clearActiveSession();
                     callback.invoke(t.getMessage());
                 }
             });
@@ -281,6 +281,7 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
 
     @ReactMethod
     public void logOut() {
+        TwitterCore.getInstance().getSessionManager().clearActiveSession();
         TwitterCore.getInstance().logOut();
     }
 
