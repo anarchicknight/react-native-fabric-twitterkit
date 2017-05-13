@@ -190,7 +190,8 @@ RCT_EXPORT_METHOD(getMemberLists:(NSDictionary *)options :(RCTResponseSenderBloc
 
 RCT_EXPORT_METHOD(getUserName:(RCTResponseSenderBlock)callback)
 {
-    NSString *name = [Twitter sharedInstance].sessionStore.session.userName;
+    TWTRSession *session = [Twitter sharedInstance].sessionStore.session;
+    NSString *name = session.userName;
     callback(@[[NSNull null], name]);
 }
 
