@@ -83,6 +83,12 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
     }
 
     @ReactMethod
+    public void getUserName(final Callback callback) {
+        String name = TwitterCore.getInstance().getSessionManager().getActiveSession().getUserName();
+        callback.invoke(null, name);
+    }
+
+    @ReactMethod
     public void composeTweet(ReadableMap options, final Callback callback) {
         try {
             this.callback = callback;

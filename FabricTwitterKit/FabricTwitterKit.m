@@ -188,6 +188,12 @@ RCT_EXPORT_METHOD(getMemberLists:(NSDictionary *)options :(RCTResponseSenderBloc
     }
 }
 
+RCT_EXPORT_METHOD(getUserName:(RCTResponseSenderBlock)callback)
+{
+    NSString *name = [Twitter sharedInstance].sessionStore.session.userName;
+    callback(@[[NSNull null], name]);
+}
+
 RCT_EXPORT_METHOD(fetchTweet:(NSDictionary *)options :(RCTResponseSenderBlock)callback)
 {
     TWTRAPIClient *client = [[TWTRAPIClient alloc] init];
