@@ -40,12 +40,11 @@ RCT_EXPORT_METHOD(login:(RCTResponseSenderBlock)callback)
 
 RCT_EXPORT_METHOD(fetchProfile:(RCTResponseSenderBlock)callback)
 {
-    TWTRAPIClient *client = [[TWTRAPIClient alloc] init];
-    TWTRSessionStore *store = [[Twitter sharedInstance] sessionStore];
-
-    TWTRSession *lastSession = store.session;
+    TWTRSession *lastSession = [Twitter sharedInstance].sessionStore.session;
 
     if(lastSession) {
+        NSString *userId = lastSession.userID;
+        TWTRAPIClient *client = [[TWTRAPIClient alloc] initWithUserID:userId];
         NSString *showEndpoint = @"https://api.twitter.com/1.1/users/show.json";
         NSDictionary *params = @{@"user_id": lastSession.userID};
 
