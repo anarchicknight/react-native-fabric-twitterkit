@@ -89,24 +89,6 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
     }
 
     @ReactMethod
-    public void composeTweet(ReadableMap options, final Callback callback) {
-        try {
-            this.callback = callback;
-
-            String body = options.hasKey("body") ? options.getString("body") : "";
-
-            TweetComposer.Builder builder = new TweetComposer.Builder(reactContext).text(body);
-            final Intent intent = builder.createIntent();
-            reactContext.startActivityForResult(intent, REQUEST_CODE, intent.getExtras());
-
-        } catch (Exception e) {
-            //error!
-            sendCallback(false, false, true);
-            throw e;
-        }
-    }
-
-    @ReactMethod
     public void login(final Callback callback) {
 
         loginButton = new TwitterLoginButton(getCurrentActivity());
@@ -275,41 +257,6 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
                     exception.printStackTrace();
                     //TwitterCore.getInstance().getSessionManager().clearActiveSession();
                     callback.invoke(exception.getMessage());
-                }
-            });
-        } catch (Exception ex) {
-            callback.invoke(ex.getMessage());
-        }
-    }
-
-    @ReactMethod
-    public void fetchTweet(ReadableMap options, final Callback callback) {
-
-        try {
-            ReactNativeFabricApiClient client = new ReactNativeFabricApiClient(TwitterCore.getInstance().getSessionManager().getActiveSession());
-            StatusesService statusesService = client.getStatusesService();
-
-            Long id = options.hasKey("id") ? new Long(options.getString("id")) : 0L;
-            Boolean trim_user = options.hasKey("trim_user") ? new Boolean(options.getString("trim_user")) : false;
-            Boolean include_my_retweet = options.hasKey("include_my_retweet") ? new Boolean(options.getString("include_my_retweet")) : false;
-
-            statusesService.show(id, trim_user, include_my_retweet, null).enqueue(new retrofit2.Callback<Tweet>() {
-                @Override
-                public void onResponse(Call<Tweet> call, Response<Tweet> response) {
-                    Gson gson = new Gson();
-                    try {
-                        WritableMap map = (WritableMap)FabricTwitterKitUtils.jsonToWritableMap(gson.toJson(response.body()));
-                        callback.invoke(null, map);
-                    } catch (Exception exception) {
-                        callback.invoke(exception.getMessage());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Tweet> call, Throwable t) {
-                    t.printStackTrace();
-                    //TwitterCore.getInstance().getSessionManager().clearActiveSession();
-                    callback.invoke(t.getMessage());
                 }
             });
         } catch (Exception ex) {

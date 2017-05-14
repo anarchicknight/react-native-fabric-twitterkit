@@ -17,14 +17,8 @@ module.exports = {
   fetchProfile: function (cb) {
     SMXTwitter.fetchProfile(cb);
   },
-  fetchTweet: function (options, cb) {
-    SMXTwitter.fetchTweet(options, cb);
-  },
   logOut: function () {
     SMXTwitter.logOut();
-  },
-  composeTweet: function (options, cb) {
-    SMXTwitter.composeTweet(options, cb);
   },
   getMyLists: function(options, cb) {
     SMXTwitter.getMyLists(options, cb);
