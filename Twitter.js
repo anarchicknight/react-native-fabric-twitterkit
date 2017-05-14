@@ -34,5 +34,8 @@ module.exports = {
   },
   createList: function(options, cb) {
     SMXTwitter.createList(options, cb);
+  },
+  deleteList: function(options, cb) {
+    SMXTwitter.deleteList(options, cb);
   }
 };

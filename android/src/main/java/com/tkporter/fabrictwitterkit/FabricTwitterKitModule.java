@@ -176,6 +176,34 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
     }
 
     @ReactMethod
+    public void deleteList(ReadableMap options, final Callback callback) {
+        try {
+            ReactNativeFabricApiClient client = new ReactNativeFabricApiClient(TwitterCore.getInstance().getSessionManager().getActiveSession());
+            long listId = Long.parseLong(options.getString("listId"));
+            client.getCustomService().deleteList(listId).enqueue(new com.twitter.sdk.android.core.Callback<Object>() {
+                @Override
+                public void success(Result<Object> result) {
+                    Gson gson = new Gson();
+                    try {
+                        WritableMap map = (WritableMap) FabricTwitterKitUtils.jsonToWritableMap(gson.toJson(result.data));
+                        callback.invoke(null, map);
+                    } catch (Exception exception) {
+                        callback.invoke(exception.getMessage());
+                    }
+                }
+
+                @Override
+                public void failure(TwitterException exception) {
+                    exception.printStackTrace();
+                    callback.invoke(exception.getMessage());
+                }
+            });
+        } catch(Exception ex) {
+            callback.invoke(ex.getMessage());
+        }
+    }
+
+    @ReactMethod
     public void getMyLists(ReadableMap options, final Callback callback) {
 
         try {
@@ -306,6 +334,9 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
 
         @POST("/1.1/lists/create.json")
         Call<Object> createList(@Query("name") String name, @Query("description") String description, @Query("mode") String mode);
+
+        @POST("/1.1/lists/destroy.json")
+        Call<Object> deleteList(@Query("list_id") long listId);
     }
 
 }
