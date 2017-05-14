@@ -161,6 +161,38 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
     }
 
     @ReactMethod
+    public void createList(ReadableMap options, final Callback callback){
+        try {
+            ReactNativeFabricApiClient client = new ReactNativeFabricApiClient(TwitterCore.getInstance().getSessionManager().getActiveSession());
+            // Not bothering with checking here if the key exists as will make sure in RN JS side that the values are present
+            String name = options.getString("name");
+            String description = options.getString("description");
+            String mode = options.getString("mode");
+
+            client.getCustomService().createList(name, description, mode).enqueue(new com.twitter.sdk.android.core.Callback<Object>() {
+                @Override
+                public void success(Result<Object> result) {
+                    Gson gson = new Gson();
+                    try {
+                        WritableMap map = (WritableMap) FabricTwitterKitUtils.jsonToWritableMap(gson.toJson(result.data));
+                        callback.invoke(null, map);
+                    } catch (Exception exception) {
+                        callback.invoke(exception.getMessage());
+                    }
+                }
+
+                @Override
+                public void failure(TwitterException exception) {
+                    exception.printStackTrace();
+                    callback.invoke(exception.getMessage());
+                }
+            });
+        } catch(Exception ex) {
+            callback.invoke(ex.getMessage());
+        }
+    }
+
+    @ReactMethod
     public void getMyLists(ReadableMap options, final Callback callback) {
 
         try {
@@ -323,6 +355,9 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
 
         @GET("/1.1/lists/memberships.json")
         Call<Object> memberLists(@Query("user_id") long id, @Query("count") int count);
+
+        @POST("/1.1/lists/create.json")
+        Call<Object> createList(@Query("name") String name, @Query("description") String description, @Query("mode") String mode);
     }
 
 }

@@ -37,5 +37,8 @@ module.exports = {
   },
   getUserName: function(cb) {
     SMXTwitter.getUserName(cb);
+  },
+  createList: function(options, cb) {
+    SMXTwitter.createList(options, cb);
   }
 };

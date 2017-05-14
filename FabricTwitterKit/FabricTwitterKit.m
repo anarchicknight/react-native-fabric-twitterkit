@@ -88,6 +88,53 @@ RCT_EXPORT_METHOD(fetchProfile:(RCTResponseSenderBlock)callback)
 
 }
 
+RCT_EXPORT_METHOD(createList:(NSDictionary *)options :(RCTResponseSenderBlock)callback) 
+{
+    TWTRSession *lastSession = [Twitter sharedInstance].sessionStore.session;
+    NSString *name = options[@"name"];
+    NSString *description = options[@"description"];
+    NSString *mode = options[@"mode"];
+
+    if(lastSession)
+    {
+        NSString *userId = lastSession.userID;
+        TWTRAPIClient *client = [[TWTRAPIClient alloc] initWithUserID:userId];
+        NSString *createListEndpoint = @"https://api.twitter.com/1.1/lists/create.json";
+        NSDictionary *params = @{
+            @"name": name,
+            @"description": description,
+            @"mode": mode
+        };
+        NSError *clientError;
+        NSURLRequest *request = [client URLRequestWithMethod:@"POST" URL:createListEndpoint parameters:params error:&clientError];
+        
+        if(request)
+        {
+            [client sendTwitterRequest:request completion:^(NSURLResponse *response, NSData *data, NSError *connectionError)
+            {
+                if(data)
+                {
+                    NSError *jsonError;
+                    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+                    callback(@[[NSNull null], json]);
+                }
+                else
+                {
+                    callback(@[[connectionError localizedDescription]]);       
+                }
+            }];
+        }
+        else
+        {
+            NSLog(@"Error: %@", clientError);
+        }
+    }
+    else
+    {
+        callback(@[@"Session must not be null."]);
+    }
+}
+
 RCT_EXPORT_METHOD(getMyLists:(NSDictionary *)options :(RCTResponseSenderBlock)callback) {
     TWTRSession *lastSession = [Twitter sharedInstance].sessionStore.session;
     
@@ -117,7 +164,7 @@ RCT_EXPORT_METHOD(getMyLists:(NSDictionary *)options :(RCTResponseSenderBlock)ca
             NSLog(@"Error: %@", clientError);
         }
     } else {
-        callback(@[@"Session must not be null."]);   
+        callback(@[@"Session must not be null."]);
     }
 }
 
